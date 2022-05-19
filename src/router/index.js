@@ -44,11 +44,11 @@ const routes = [
     path: '/404',
     component: () => import('@/views/error-page/404'),
     hidden: true
-  },
-  {
-      path: '/',
-      redirect: '/login'
   }
+  // {
+  //     path: '/',
+  //     redirect: '/login'
+  // }
 ]
 
 const router = new VueRouter({
