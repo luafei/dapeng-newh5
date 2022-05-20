@@ -727,6 +727,7 @@ p {
         justify-content: space-between;
         padding: 13px 15px 10px 15px;
         width: 100%;
+        padding-bottom: 40px;
         .underline {
             width: 100%;
             margin: 10px 0;

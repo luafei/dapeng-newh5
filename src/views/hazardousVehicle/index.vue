@@ -803,6 +803,7 @@ export default {
         position: relative;
         top: 44px;
         width: 100%;
+        padding-bottom: 40px;
         .hazardousStatistics {
             @include module;
             .header {

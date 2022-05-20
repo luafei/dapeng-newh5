@@ -48,6 +48,12 @@
                         @datePickerClick="datePickerClick"
                     ></date-picker>
                 </div>
+                <div class="subHeader">
+                    <drive-picker
+                        :target="'monitoringEntranceDirection'"
+                        @drivePickerClick="drivePickerClick"
+                    ></drive-picker>
+                </div>
                 <div class="center">
                     <div id="monitoringEntranceStatic"></div>
                 </div>
@@ -112,6 +118,7 @@ export default {
                 carNetinflow: 0,
             },
             monitoringEntranceTimeType: "day",
+            monitoringEntranceDirection: 0,
             direction: 0,
             monitorTimeType: "day",
         };
@@ -120,6 +127,7 @@ export default {
         this.initMonitorTrafficFlow();
     },
     mounted() {
+        console.log("trafficOperation");
         this.initTrafficFlow();
         this.initMonitoringEntrance();
         this.initMonitoringDrive();
@@ -188,9 +196,9 @@ export default {
         // 车辆监测出入口通行量排名
         initMonitoringEntrance() {
             let postData = {
-                carType: 'all',
-                direction: '',
-                timeType: this.monitoringEntranceTimeType
+                carType: "all",
+                direction: this.monitoringEntranceDirection,
+                timeType: this.monitoringEntranceTimeType,
             };
             getTrafficRank(postData).then((res) => {
                 var values = [];
@@ -205,34 +213,166 @@ export default {
                 var myChart = echarts.init(
                     document.getElementById("monitoringEntranceStatic")
                 );
-                // 绘制图表
+
+                var maxArr = [];
+                var eData;
+                if (values.length !== 0) {
+                    maxArr = [];
+                    let max = Math.max(...values);
+                    values.forEach(() => {
+                        maxArr.push({
+                            trueValue: max,
+                            value: 100,
+                        });
+                    });
+                    eData = values.map((item) => {
+                        let value =
+                            (item / maxArr[0].trueValue).toFixed(2) * 100;
+                        return {
+                            value: value,
+                            trueValue: item,
+                        };
+                    });
+                } else {
+                    eData = maxArr = [];
+                }
+
                 var option = {
-                    tooltip: {
-                        trigger: "axis",
-                        axisPointer: {
-                            type: "shadow",
-                        },
-                    },
-                    legend: {},
                     grid: {
-                        top: "0",
-                        left: "3%",
-                        right: "4%",
-                        bottom: "3%",
+                        left: "-50px", // 距离dom间距
+                        right: "10px",
+                        top: "0%",
+                        bottom: "1%",
                         containLabel: true,
                     },
-                    xAxis: {
-                        type: "value",
-                        boundaryGap: [0, 0.01],
-                    },
-                    yAxis: {
-                        type: "category",
-                        data: labels,
-                    },
+                    xAxis: [
+                        {
+                            type: "value",
+                            axisPointer: {
+                                type: "shadow",
+                            },
+                            // 横坐标 分割线等取消显示
+                            axisTick: {
+                                show: false,
+                            },
+                            axisLine: {
+                                show: false,
+                            },
+                            splitLine: {
+                                show: false,
+                            },
+                            axisLabel: {
+                                show: false,
+                            },
+                        },
+                    ],
+                    yAxis: [
+                        {
+                            type: "category",
+                            inverse: true,
+                            axisLabel: {
+                                verticalAlign: "bottom",
+                                align: "left",
+                                padding: [0, 10, 4, 6],
+                                textStyle: {
+                                    fontSize: 14,
+                                    color: "#86B3B8",
+                                    fontFamily: "Source Han Sans CN",
+                                },
+                                formatter(value, index) {
+                                    index += 1;
+                                    return value;
+                                    // return `{rank${index}|${index}} {text1|${value}}`;
+                                },
+                            },
+                            // 纵坐标数据
+                            data: labels,
+                            yAxisIndex: 0,
+                            // 横坐标 分割线等取消显示
+                            axisTick: {
+                                show: false,
+                            },
+                            axisLine: {
+                                show: false,
+                            },
+                        },
+                        {
+                            type: "category",
+                            inverse: true,
+                            axisLine: {
+                                show: false,
+                            },
+                            axisTick: {
+                                show: false,
+                            },
+                            axisLabel: {
+                                show: true,
+                                inside: false,
+                                verticalAlign: "bottom",
+                                padding: [0, 10, -22, -5],
+                                lineHeight: "40",
+                                textStyle: {
+                                    fontSize: 12,
+                                    color: "#000",
+                                    fontFamily: "SourceHanSansCN-Regular",
+                                },
+                                formatter: (val, key) => {
+                                    if (eData[key]) {
+                                        return `${eData[key].trueValue}辆`;
+                                    } else {
+                                        return "0辆";
+                                    }
+                                },
+                            },
+                            // 统计的总量 用纵坐标模拟
+                            data: eData,
+                        },
+                    ],
                     series: [
                         {
-                            type: "bar",
-                            data: values
+                            show: true,
+                            type: "pictorialBar",
+                            symbol: "fixed",
+                            symbolSize: [2, 10],
+                            symbolMargin: 1,
+                            symbolRepeat: "repeat",
+                            barWidth: 6, // 统计条宽度
+                            itemStyle: {
+                                normal: {
+                                    color: {
+                                        colorStops: [
+                                            {
+                                                offset: 0,
+                                                color: "#57E9FF", // 0% 处的颜色
+                                            },
+                                            {
+                                                offset: 1,
+                                                color: "#4BEBBB", // 100% 处的颜色
+                                            },
+                                        ],
+                                        globalCoord: false, // 缺省为 false
+                                    },
+                                },
+                            },
+                            z: 3,
+                            data: eData,
+                        },
+                        {
+                            show: true,
+                            type: "pictorialBar",
+                            symbol: "fixed",
+                            symbolSize: [2, 10],
+                            symbolMargin: 1,
+                            symbolRepeat: "repeat",
+                            barGap: "-100%",
+                            barWidth: 6, // 统计条宽度
+                            itemStyle: {
+                                normal: {
+                                    color: "#aaa",
+                                },
+                            },
+                            z: 1,
+                            data: maxArr,
                         },
                     ],
                 };
@@ -250,9 +390,24 @@ export default {
                 var values = [];
                 var labels = [];
                 if (res.data.data) {
-                    res.data.data.forEach((item) => {
-                        values.push(item.num);
-                        labels.push(item.vehicleTypeName);
+                    labels = res.data.data.map((item) => {
+                        return item.vehicleTypeName;
+                    });
+                    values = res.data.data.map((item) => {
+                        return {
+                            value: item.num,
+                            vehicleType: item.vehicleType,
+                        };
+                    });
+                }
+
+                var eData = values;
+                var maxArr = [];
+                if (values.length !== 0) {
+                    maxArr = [];
+                    let max = Math.max(...values);
+                    values.forEach(() => {
+                        maxArr.push(max);
                     });
                 }
                 // 基于准备好的dom，初始化echarts实例
@@ -261,32 +416,148 @@ export default {
                 );
                 // 绘制图表
                 var option = {
+                    animationDuration: 1500,
+                    grid: {
+                        left: "10px",
+                        right: "10px",
+                        bottom: "0%",
+                        top: "5%",
+                        containLabel: true,
+                    },
                     tooltip: {
                         trigger: "axis",
                         axisPointer: {
                             type: "shadow",
                         },
-                    },
-                    legend: {},
-                    grid: {
-                        top: "0",
-                        left: "3%",
-                        right: "4%",
-                        bottom: "3%",
-                        containLabel: true,
+                        formatter: "{b0}: {c0}",
                     },
                     xAxis: {
+                        show: false, //是否显示x轴
                         type: "value",
-                        boundaryGap: [0, 0.01],
                     },
-                    yAxis: {
-                        type: "category",
-                        data: labels,
-                    },
+                    yAxis: [
+                        {
+                            type: "category",
+                            inverse: true, //让y轴数据逆向
+                            axisLabel: {
+                                show: false,
+                                inside: false,
+                                textStyle: {
+                                    color: (val, index) => {
+                                        if (index === 0) {
+                                            return "#41FFEA";
+                                        } else {
+                                            return "#86B3B8";
+                                        }
+                                    }, //y轴字体颜色
+                                },
+                                //定义富文本标签
+                                rich: {
+                                    lg: {
+                                        fontWeight: "bold",
+                                        fontSize: 12, //字体默认12
+                                        color: "#08C",
+                                        padding: [0, 5, 0, 0],
+                                    },
+                                    title: {
+                                        color: "#86B3B8",
+                                        fontWeight: "lighter",
+                                    },
+                                },
+                            },
+                            splitLine: { show: false }, //横向的线
+                            axisTick: { show: false }, //y轴的端点
+                            axisLine: { show: false }, //y轴的线
+                            data: labels,
+                        },
+                        {
+                            type: "category",
+                            inverse: true,
+                            axisTick: {
+                                show: false,
+                            },
+                            axisLine: {
+                                show: false,
+                            },
+                            show: true,
+                            axisLabel: {
+                                inside: false,
+                                textStyle: {
+                                    color: function (value, index) {
+                                        if (index === 0) return "#FF3600";
+                                        if (index === 1) return "#FE8602";
+                                        if (index === 2) return "#EFC500";
+                                        if (index === 3) return "#7CFF00";
+                                        if (index === 4) return "#7CFF00";
+                                    },
+                                    fontSize: "12",
+                                },
+                                formatter: function (val) {
+                                    return `${val}辆`;
+                                },
+                            },
+                            data: eData,
+                        },
+                    ],
                     series: [
                         {
+                            name: "数据内框",
+                            zlevel: 2,
                             type: "bar",
-                            data: values,
+                            itemStyle: {
+                                normal: {
+                                    barBorderRadius: 30,
+                                    color: echarts.graphic.LinearGradient(
+                                        0,
+                                        0,
+                                        1,
+                                        0,
+                                        [
+                                            {
+                                                offset: 0,
+                                                color: "rgba(71,181,255,0.6)",
+                                            },
+                                            {
+                                                offset: 1,
+                                                color: "rgba(65,255,234,0.7)",
+                                            },
+                                        ]
+                                    ),
+                                },
+                            },
+                            barWidth: 11,
+                            data: eData,
+                            barGap: 10,
+                            label: {
+                                normal: {
+                                    color: "#b3ccf8",
+                                    show: true,
+                                    position: [0, "-12px"],
+                                    textStyle: {
+                                        fontSize: 12,
+                                    },
+                                    formatter: function (a) {
+                                        return a.name;
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            name: "外框",
+                            type: "bar",
+                            zlevel: 1,
+                            itemStyle: {
+                                normal: {
+                                    borderColor: "rgba(115,255,254,1)",
+                                    borderWidth: 0.5,
+                                    barBorderRadius: 15,
+                                    color: "rgba(102, 102, 102,0)",
+                                },
+                            },
+                            barGap: "-100%",
+                            z: 0,
+                            barWidth: 11,
+                            data: maxArr,
                         },
                     ],
                 };
@@ -305,41 +576,207 @@ export default {
                 if (res.data.data) {
                     res.data.data.forEach((item) => {
                         values.push(item.num);
-                        labels.push(item.roadName);
+                        labels.push(item.roadName.slice(0, 4));
                     });
                 }
+                var eData = values;
+                var cData = [...values].map((value) => {
+                    return parseInt(value);
+                });
+                var maxArr = [];
+                if (values.length !== 0) {
+                    maxArr = [];
+                    let max = Math.max(...cData);
+                    values.forEach(() => {
+                        maxArr.push(max);
+                    });
+                } else {
+                    maxArr = [];
+                }
+                var arr = [];
+                var maxLen = 0;
+                for (let index = 0; index < labels.length; index++) {
+                    arr.push(labels[index].length);
+                }
+                if (arr.length) {
+                    maxLen = Math.max(...arr);
+                }
+
                 // 基于准备好的dom，初始化echarts实例
                 var myChart = echarts.init(
                     document.getElementById("monitorLoadStatic")
                 );
                 // 绘制图表
                 var option = {
+                    animationDuration: 1500,
+                    grid: {
+                        left: "10px",
+                        right: "10px",
+                        bottom: "0%",
+                        top: "0%",
+                        containLabel: true,
+                    },
                     tooltip: {
                         trigger: "axis",
                         axisPointer: {
                             type: "shadow",
                         },
-                    },
-                    legend: {},
-                    grid: {
-                        top: "0",
-                        left: "3%",
-                        right: "4%",
-                        bottom: "3%",
-                        containLabel: true,
+                        formatter: "{b0}: {c0}",
                     },
                     xAxis: {
+                        show: false, //是否显示x轴
                         type: "value",
-                        boundaryGap: [0, 0.01],
                     },
-                    yAxis: {
-                        type: "category",
-                        data: labels,
-                    },
+                    yAxis: [
+                        {
+                            type: "category",
+                            inverse: true, //让y轴数据逆向
+                            triggerEvent: true, //开启监听点击事件
+                            offset: maxLen <= 3 ? 50 : 200,
+                            axisLabel: {
+                                show: true,
+                                margin: 20,
+                                textStyle: {
+                                    color: "#86B3B8", //y轴字体颜色
+                                    align: "left",
+                                },
+                                formatter: function (val, index) {
+                                    return (
+                                        "{" +
+                                        (index + 1) +
+                                        "|" +
+                                        (index + 1) +
+                                        " }  " +
+                                        val
+                                    );
+                                },
+                                //定义富文本标签
+                                rich: {
+                                    1: {
+                                        color: "#fff",
+                                        backgroundColor: "#FF3602",
+                                        padding: [1, 1, 2, 2],
+                                        fontSize: 12,
+                                        align: "right",
+                                        align: "center",
+                                        verticalAlign: "middle",
+                                    },
+                                    2: {
+                                        color: "#fff",
+                                        backgroundColor: "#EFC500",
+                                        padding: [1, 1, 2, 2],
+                                        fontSize: 12,
+                                        align: "center",
+                                        verticalAlign: "middle",
+                                    },
+                                    3: {
+                                        color: "#fff",
+                                        backgroundColor: "#7DFF00",
+                                        padding: [1, 1, 2, 2],
+                                        fontSize: 12,
+                                        align: "center",
+                                        verticalAlign: "middle",
+                                    },
+                                    4: {
+                                        color: "#fff",
+                                        backgroundColor: "#7CFF00",
+                                        padding: [1, 1, 2, 2],
+                                        fontSize: 12,
+                                        align: "center",
+                                        verticalAlign: "middle",
+                                    },
+                                    5: {
+                                        color: "#fff",
+                                        backgroundColor: "#7CFF00",
+                                        padding: [1, 1, 2, 2],
+                                        fontSize: 12,
+                                        align: "center",
+                                        verticalAlign: "middle",
+                                    },
+                                    lg: {
+                                        fontWeight: "bold",
+                                        fontSize: 12, //字体默认12
+                                        color: "#08C",
+                                        padding: [0, 5, 0, 0],
+                                    },
+                                    title: {
+                                        color: "#86B3B8",
+                                        fontWeight: "lighter",
+                                    },
+                                },
+                            },
+                            splitLine: { show: false }, //横向的线
+                            axisTick: { show: false }, //y轴的端点
+                            axisLine: { show: false }, //y轴的线
+                            data: labels,
+                        },
+                        {
+                            type: "category",
+                            inverse: true,
+                            axisTick: "none",
+                            axisLine: "none",
+                            show: true,
+                            axisLabel: {
+                                textStyle: {
+                                    color: function (value, index) {
+                                        if (index === 0) return "#FF3600";
+                                        if (index === 1) return "#EFC500";
+                                        if (index === 2) return "#7DFF00";
+                                        if (index === 3) return "#7DFF00";
+                                        if (index === 4) return "#7DFF00";
+                                    },
+                                    fontSize: "12",
+                                },
+                                formatter: (value, index) => {
+                                    return value;
+                                },
+                            },
+                            data: eData,
+                        },
+                    ],
                     series: [
                         {
+                            name: "数据内框",
                             type: "bar",
-                            data: values,
+                            itemStyle: {
+                                normal: {
+                                    barBorderRadius: 30,
+                                    color: echarts.graphic.LinearGradient(
+                                        0,
+                                        0,
+                                        1,
+                                        0,
+                                        [
+                                            {
+                                                offset: 0,
+                                                color: "rgba(71,181,255,0.6)",
+                                            },
+                                            {
+                                                offset: 1,
+                                                color: "rgba(65,255,234,0.7)",
+                                            },
+                                        ]
+                                    ),
+                                },
+                            },
+                            barWidth: 11,
+                            data: cData,
+                        },
+                        {
+                            name: "外框",
+                            type: "bar",
+                            itemStyle: {
+                                normal: {
+                                    borderColor: "rgba(115,255,254,1)",
+                                    borderWidth: 0.5,
+                                    barBorderRadius: 15,
+                                    color: "rgba(102, 102, 102,0)",
+                                },
+                            },
+                            barGap: "-100%",
+                            z: 0,
+                            barWidth: 11,
+                            data: maxArr,
                         },
                     ],
                 };
@@ -355,19 +792,23 @@ export default {
                 roadFlag: 0,
             };
             getTimeDistribution(postData).then((res) => {
-                var eData = res.data.data;
+                var labels = [];
+                var values = [];
+                labels = res.data.data[0].x;
+                values = res.data.data;
+                var eData = values;
                 // 基于准备好的dom，初始化echarts实例
                 var myChart = echarts.init(
                     document.getElementById("monitorTimeStatic")
                 );
                 // 绘制图表
-                const option = {
+                var option = {
                     tooltip: {
                         trigger: "axis",
                         axisPointer: {
                             type: "shadow",
                             shadowStyle: {
-                                color: new echarts.graphic.LinearGradient(
+                                color: echarts.graphic.LinearGradient(
                                     0,
                                     0,
                                     0,
@@ -388,9 +829,9 @@ export default {
                         },
                     },
                     grid: {
+                        left: "10px",
+                        right: "10px",
                         top: "25%",
-                        right: "0",
-                        left: "0",
                         bottom: "0",
                         containLabel: true,
                     },
@@ -409,7 +850,7 @@ export default {
                         },
                         textStyle: {
                             //图例文字的样式
-                            color: "#000000",
+                            color: "#86B3B8",
                             fontSize: 10,
                         },
                         // y:"top"
@@ -417,7 +858,7 @@ export default {
                     xAxis: [
                         {
                             type: "category",
-                            data: this.labels,
+                            data: labels,
                             axisLine: {
                                 lineStyle: {
                                     color: "rgba(255,255,255,0.12)",
@@ -506,6 +947,11 @@ export default {
         drivePickerClick(e) {
             if (e.target === "direction") {
                 this.direction = e.type;
+                this.initMonitoringDrive();
+            }
+            if (e.target === "monitoringEntranceDirection") {
+                this.monitoringEntranceDirection = e.type;
+                this.initMonitoringEntrance();
             }
         },
         timePickerClick(e) {
@@ -557,6 +1003,7 @@ export default {
         position: relative;
         top: 44px;
         width: 100%;
+        padding-bottom: 40px;
         .monitorTrafficFlow {
             @include module;
             .header {
@@ -602,8 +1049,20 @@ export default {
         }
         .monitoringEntrance {
             @include module;
+            height: 220px;
             .header {
                 @include header;
+            }
+            .subHeader {
+                color: #333333;
+                font-size: 14px;
+                font-weight: 600;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 20px;
+                white-space: nowrap;
             }
             .center {
                 height: 140px;

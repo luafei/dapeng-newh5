@@ -892,6 +892,7 @@ export default {
         position: relative;
         top: 44px;
         width: 100%;
+        padding-bottom: 40px;
         .trafficStatistics {
             @include module;
             .header {

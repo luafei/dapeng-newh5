@@ -12,7 +12,6 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 // 判断粤政路径
 function getQueryMap() {
     var href = window.location.href;
-    console.log('href', href)
     var filterHref = href.split('#/')[0];
     var query = filterHref.slice(filterHref.indexOf('?data')+1);
   
@@ -25,7 +24,6 @@ function getQueryMap() {
 
 const whiteList = ['/login']
 router.beforeEach((to, from, next) => {
-    console.log('beforeEach')
     NProgress.start() // start progress bar
     // function dealRoot() {
     //     // let route = store.getters.addRouters[0]
@@ -36,7 +34,6 @@ router.beforeEach((to, from, next) => {
     //     // next({ path: '/' })
     //     // NProgress.done()
     // }
-    console.log('store.getters.addRouters', store.getters.addRouters)
     if (getToken()) {        
         if (to.path == '/login' || to.path == '/') {
             next({ path: '/home' })
@@ -68,7 +65,6 @@ router.beforeEach((to, from, next) => {
     }
 
     async function setUserInfo(id) {
-        console.log('setUserInfo');
         const { data } = await getUserInfo(id)
         const { userRoles, userId, userName } = data.data
         store.commit('SET_ROLES', userRoles)
