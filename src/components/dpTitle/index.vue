@@ -1,7 +1,8 @@
 <template>
     <div :class="['title', isFixed ? 'fixed' : '']" >
-        <span>
-            <van-icon name="arrow-left" @click="goBack" v-if="isShowArrow" class="arrow-left"/>
+        <span v-if="isShowArrow" @click="goBack">
+            <van-icon name="arrow-left"  class="arrow-left"/>
+            返回
         </span>
         <div class="text">{{title}}</div>
         <!-- <div class="right"></div> -->
@@ -48,11 +49,11 @@ export default {
         display: flex;
         align-items: center;
         // justify-content: space-between;
-        background-color: #5076B8;
+        background-color: #2d33ee;
         color: #fff;
         .arrow-left{
             margin-left: 10px;
-            font-size: 23px;
+            // font-size: 23px;
         }
         .text{
             position: absolute;
@@ -64,6 +65,10 @@ export default {
         .right{
             width: 23px;
             margin-right: 10px;
+        }
+        span {
+            display: flex;
+            align-items: center;
         }
     }
     .fixed{

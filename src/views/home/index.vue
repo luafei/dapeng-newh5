@@ -1,6 +1,9 @@
 <template>
     <div class="home">
         <dp-title :title="title" :is-show-arrow="false"></dp-title>
+        <div class="target">
+            <img src="@/assets/images/home_target.png" alt="">
+        </div>
         <div class="content">
             <div class="trafficOperation">
                 <div class="header" @click="goDetail(1)">
@@ -19,6 +22,49 @@
                         </div>
                         <span class="lin"></span>
                     </template>
+                </div>
+            </div>
+            <div class="dumpTruck">
+                <div class="header" @click="goDetail(3)">
+                    <span>泥头车</span>
+                    <img src="@/assets/images/right.png" alt="" />
+                </div>
+                <div class="center">
+                    <img src="@/assets/images/dump.png" alt="" />
+                    <p>泥头车</p>
+                </div>
+                <div class="footer">
+                    <div class="item">
+                        <p><span>{{ dump.sum }}</span>辆</p>
+                        <p>当前总数</p>
+                    </div>
+                    <span class="lin"></span>
+                    <div class="item">
+                        <p class="load">{{ dump.load }}</p>
+                        <p>主要路段</p>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="underline"></div> -->
+            <div class="hazardousVehicle">
+                <div class="header" @click="goDetail(4)">
+                    <span>危化品车</span>
+                    <img src="@/assets/images/right.png" alt="" />
+                </div>
+                <div class="center">
+                    <img src="@/assets/images/hazardous.png" alt="" />
+                    <p>危化品车</p>
+                </div>
+                <div class="footer">
+                    <div class="item">
+                        <p><span>{{ hazardous.sum }}</span>辆</p>
+                        <p>当前总数</p>
+                    </div>
+                    <span class="lin"></span>
+                    <div class="item">
+                        <p class="load">{{ hazardous.load }}</p>
+                        <p>主要路段</p>
+                    </div>
                 </div>
             </div>
             <div class="governServices">
@@ -57,50 +103,14 @@
                     </div>
                 </div>
             </div>
-            <div class="underline"></div>
-            <div class="dumpTruck">
-                <div class="header" @click="goDetail(3)">
-                    <span>泥头车</span>
-                    <img src="@/assets/images/right.png" alt="" />
-                </div>
-                <div class="center">
-                    <img src="@/assets/images/dump.png" alt="" />
-                    <p>泥头车</p>
-                </div>
-                <div class="footer">
-                    <div class="item">
-                        <p><span>{{ dump.sum }}</span>辆</p>
-                        <p>当前总数</p>
-                    </div>
-                    <span class="lin"></span>
-                    <div class="item">
-                        <p class="load">{{ dump.load }}</p>
-                        <p>主要路段</p>
-                    </div>
-                </div>
+            
+            <div class="home_underline">
+                <img src="@/assets/images/home_underline.svg" alt="">
+                <span>以下卡片待上线</span>
+                <img src="@/assets/images/home_underline.svg" alt="">
             </div>
-            <div class="hazardousVehicle">
-                <div class="header" @click="goDetail(4)">
-                    <span>危化品车</span>
-                    <img src="@/assets/images/right.png" alt="" />
-                </div>
-                <div class="center">
-                    <img src="@/assets/images/hazardous.png" alt="" />
-                    <p>危化品车</p>
-                </div>
-                <div class="footer">
-                    <div class="item">
-                        <p><span>{{ hazardous.sum }}</span>辆</p>
-                        <p>当前总数</p>
-                    </div>
-                    <span class="lin"></span>
-                    <div class="item">
-                        <p class="load">{{ hazardous.load }}</p>
-                        <p>主要路段</p>
-                    </div>
-                </div>
-            </div>
-            <div class="underline"></div>
+            
+            <!-- <div class="underline"></div> -->
             <div class="ecologicalIndicators">
                 <div class="header">
                     <span>生态指标</span>
@@ -172,7 +182,7 @@
                     </div>
                 </div>
             </div>
-            <div class="underline"></div>
+            <!-- <div class="underline"></div> -->
             <div class="brightMode">
                 <div class="header">
                     <span>光明模式</span>
@@ -246,7 +256,7 @@
                     </div>
                 </div>
             </div>
-            <div class="underline"></div>
+            <!-- <div class="underline"></div> -->
             <div class="smartEmergency">
                 <div class="header">
                     <span>智慧应急</span>
@@ -323,7 +333,7 @@
                     </div>
                 </div>
             </div>
-            <div class="underline"></div>
+            <!-- <div class="underline"></div> -->
             <div class="smartMedical">
                 <div class="header">
                     <span>智慧医疗</span>
@@ -394,7 +404,7 @@
                     </div>
                 </div>
             </div>
-            <div class="underline"></div>
+            <!-- <div class="underline"></div> -->
             <div class="gis">
                 <div class="header">
                     <span>三维GIS</span>
@@ -436,13 +446,13 @@
                 </div>
                 <div class="center">
                     <div class="item">
-                        <div>
+                        <div class="title">
                             <img
                                 src="@/assets/images/smartCity_chengguan.svg"
                             />
                             <p>智慧城管</p>
                         </div>
-                        <div><span></span>万元</div>
+                        <div class="unit"><span></span>万元</div>
                         <div>城市维护费</div>
                     </div>
                     <div class="lin"></div>
@@ -451,12 +461,12 @@
                             <img src="@/assets/images/smartCity_huanwei.svg" />
                             <p>环卫指数</p>
                         </div>
-                        <div><span></span>%</div>
+                        <div class="unit"><span></span>%</div>
                         <div>生活垃圾分类回收量</div>
                     </div>
                 </div>
             </div>
-            <div class="underline"></div>
+            <!-- <div class="underline"></div> -->
             <div class="wisdomSutra">
                 <div class="header">
                     <span>智慧经服</span>
@@ -538,7 +548,7 @@ export default {
     name: "home",
     data() {
         return {
-            title: "首页",
+            title: "专题场景",
             name: "home",
             timeType: "month",
             time2Type: "year",
@@ -681,21 +691,23 @@ $wisdomSutraHeader: #ff7e3d;
 $commercialSubjectHeader: #4b6bc6;
 
 @mixin module {
-    width: 165px;
-    height: 130px;
+    width: 100%;
+    height: 150px;
     background-color: #ffffff;
     border-radius: 5px;
+    box-shadow: 5px 5px 5px rgb(215 215 215 / 35%);
+    margin: 10px 0;
 }
 
 @mixin head($bacgroundColor) {
-    height: 23px;
+    height: 30px;
     color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: $bacgroundColor;
-    font-size: 14px;
-    font-weight: bold;
+    font-size: 18px;
+    font-weight: 600;
     position: relative;
     border-radius: 5px 5px 0 0;
     img {
@@ -710,6 +722,8 @@ p {
     margin: 0;
 }
 
+
+
 .home {
     position: absolute;
     top: 0;
@@ -719,13 +733,25 @@ p {
     overflow-x: hidden;
     overflow-y: scroll;
     text-align: center;
+    .target {
+        position: fixed;
+        top: 44px;
+        width: 100%;
+        height: 150px;
+        background-color: #ffffff;
+        z-index: 9999;
+        img {
+            width: 100%;
+            height: auto;
+        }
+    }
     .content {
         position: relative;
-        top: 44px;
+        top: 194px;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        padding: 13px 15px 10px 15px;
+        padding: 13px 20px 10px 20px;
         width: 100%;
         padding-bottom: 40px;
         .underline {
@@ -739,15 +765,15 @@ p {
                 @include head($trafficHeader);
             }
             .center {
-                height: 50px;
-                font-size: 14px;
+                height: 60px;
+                font-size: 15px;
                 font-weight: 600;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
                 img {
-                    width: 18px;
+                    width: 25px;
                     height: auto;
                 }
                 p {
@@ -764,15 +790,16 @@ p {
                     color: #333333;
                     p {
                         margin: 0;
-                        font-size: 12px;
+                        font-size: 14px;
                         font-weight: 300;
                         &:nth-of-type(1) {
                             color: #9e9e9e;
                             margin-bottom: 3px;
+                            font-size: 11px;
                         }
                         span {
                             color: #a257c9;
-                            font-size: 14px;
+                            font-size: 18px;
                             font-weight: 400;
                         }
                     }
@@ -783,6 +810,119 @@ p {
                     &:last-child {
                         display: none;
                     }
+                }
+            }
+        }
+        .dumpTruck {
+            @include module;
+            .header {
+                @include head($dumpTruckHeader);
+            }
+            .center {
+                height: 60px;
+                font-size: 15px;
+                font-weight: 600;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                img {
+                    width: 35px;
+                    height: auto;
+                }
+                p {
+                    margin: 0;
+                    text-align: center;
+                }
+            }
+            .footer {
+                height: 50px;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                .item {
+                    color: #333333;
+                    p {
+                        margin: 0;
+                        font-size: 14px;
+                        font-weight: 300;
+                        &:nth-of-type(1) {
+                            color: #9e9e9e;
+                            margin-bottom: 3px;
+                            font-size: 11px;
+                        }
+                        span {
+                            color: #3092ed;
+                            font-size: 18px;
+                            font-weight: 400;
+                        }
+                        &.load {
+                            font-size: 18px;
+                            color: #3092ed;
+                            font-weight: 400;
+                        }
+                    }
+                }
+                .lin {
+                    height: 30px;
+                    border: 1px dashed #3092ed;
+                }
+            }
+        }
+        .hazardousVehicle {
+            @include module;
+            .header {
+                @include head($hazardousHeader);
+            }
+            .center {
+                height: 60px;
+                font-size: 14px;
+                font-weight: 600;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                img {
+                    width: 35px;
+                    height: auto;
+                }
+                p {
+                    margin: 0;
+                    text-align: center;
+                }
+            }
+            .footer {
+                font-size: 15px;
+                height: 50px;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                .item {
+                    color: #333333;
+                    p {
+                        margin: 0;
+                        font-size: 14px;
+                        font-weight: 300;
+                        &:nth-of-type(1) {
+                            color: #9e9e9e;
+                            margin-bottom: 3px;
+                            font-size: 11px;
+                        }
+                        span {
+                            color: #dea90a;
+                            font-size: 18px;
+                            font-weight: 400;
+                        }
+                        &.load {
+                            font-size: 18px;
+                            color: #dea90a;
+                            font-weight: 400;
+                        }
+                    }
+                }
+                .lin {
+                    height: 30px;
+                    border: 1px dashed #dea90a;
                 }
             }
         }
@@ -797,12 +937,12 @@ p {
                 justify-content: space-around;
                 margin-top: 10px;
                 div {
-                    width: 75px;
-                    height: 40px;
+                    width: 150px;
+                    height: 45px;
                     margin-bottom: 5px;
                     background-color: #e4e9f6;
                     border: 1px dashed #4b6bc6;
-                    font-size: 10px;
+                    font-size: 14px;
                     font-weight: 300;
                     color: #333333;
                     display: flex;
@@ -821,123 +961,30 @@ p {
                         &:nth-of-type(2) {
                             white-space: nowrap;
                             text-align: center;
+                            font-size: 12px;
                         }
                     }
                     img {
-                        width: 15px;
+                        width: 20px;
                         height: auto;
                     }
                 }
             }
         }
-        .dumpTruck {
-            @include module;
-            .header {
-                @include head($dumpTruckHeader);
+        .home_underline {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin: 10px 0 30px 0;
+            span {
+                font-size: 12px;
+                font-weight: 400;
+                color: #D7D7D7;
             }
-            .center {
-                height: 50px;
-                font-size: 14px;
-                font-weight: 600;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                img {
-                    width: 25px;
-                    height: auto;
-                }
-                p {
-                    margin: 0;
-                    text-align: center;
-                }
-            }
-            .footer {
-                height: 50px;
-                display: flex;
-                justify-content: space-around;
-                align-items: center;
-                .item {
-                    color: #333333;
-                    p {
-                        margin: 0;
-                        font-size: 12px;
-                        font-weight: 300;
-                        &:nth-of-type(1) {
-                            color: #9e9e9e;
-                            margin-bottom: 3px;
-                        }
-                        span {
-                            color: #3092ed;
-                            font-size: 14px;
-                            font-weight: 400;
-                        }
-                        &.load {
-                            font-size: 14px;
-                            color: #3092ed;
-                            font-weight: 400;
-                        }
-                    }
-                }
-                .lin {
-                    height: 30px;
-                    border: 1px dashed #3092ed;
-                }
-            }
-        }
-        .hazardousVehicle {
-            @include module;
-            .header {
-                @include head($hazardousHeader);
-            }
-            .center {
-                height: 50px;
-                font-size: 14px;
-                font-weight: 600;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                img {
-                    width: 25px;
-                    height: auto;
-                }
-                p {
-                    margin: 0;
-                    text-align: center;
-                }
-            }
-            .footer {
-                height: 50px;
-                display: flex;
-                justify-content: space-around;
-                align-items: center;
-                .item {
-                    color: #333333;
-                    p {
-                        margin: 0;
-                        font-size: 12px;
-                        font-weight: 300;
-                        &:nth-of-type(1) {
-                            color: #9e9e9e;
-                            margin-bottom: 3px;
-                        }
-                        span {
-                            color: #dea90a;
-                            font-size: 14px;
-                            font-weight: 400;
-                        }
-                        &.load {
-                            font-size: 14px;
-                            color: #dea90a;
-                            font-weight: 400;
-                        }
-                    }
-                }
-                .lin {
-                    height: 30px;
-                    border: 1px dashed #dea90a;
-                }
+            img {
+                width: auto;
+                height: 2px;
             }
         }
         .ecologicalIndicators {
@@ -950,14 +997,14 @@ p {
                 align-items: center;
                 justify-content: space-around;
                 height: 40px;
-                font-size: 12px;
+                font-size: 14px;
                 img {
                     width: 23px;
                     height: auto;
                 }
                 p {
                     margin: 0;
-                    font-size: 8px;
+                    font-size: 14px;
                     white-space: nowrap;
                 }
                 div {
@@ -1013,7 +1060,7 @@ p {
                 @include head($tourisHeader);
             }
             .center {
-                height: 90px;
+                height: 110px;
                 display: flex;
                 display: flex;
                 align-items: center;
@@ -1022,9 +1069,9 @@ p {
                     p {
                         margin: 0;
                         white-space: nowrap;
-                        font-size: 11px;
+                        font-size: 10px;
                         span {
-                            font-size: 14px;
+                            font-size: 18px;
                             color: #6300bf;
                         }
                         &:nth-of-type(2) {
@@ -1034,9 +1081,8 @@ p {
                     }
                 }
                 img {
-                    width: 25px;
+                    width: 40px;
                     height: auto;
-                    margin-bottom: 5px;
                 }
                 .lin {
                     height: 80%;
@@ -1062,17 +1108,19 @@ p {
                         text-align: center;
                         position: relative;
                         line-height: 50px;
+                        font-size: 14px;
                     }
                     .db {
                         height: 50px;
                         display: flex;
                         font-size: 10px;
                         p {
+                            font-size: 14px;
                             margin: 0;
                             white-space: nowrap;
                             &:nth-of-type(1) {
                                 color: #00b3b3;
-                                font-size: 14px;
+                                font-size: 18px;
                             }
                         }
                     }
@@ -1094,12 +1142,12 @@ p {
                 justify-content: space-around;
                 margin-top: 10px;
                 div {
-                    width: 75px;
-                    height: 40px;
+                    width: 150px;
+                    height: 45px;
                     margin-bottom: 5px;
                     background-color: #dff4ea;
                     border: 1px dashed #6ecd9f;
-                    font-size: 10px;
+                    font-size: 14px;
                     font-weight: 300;
                     color: #333333;
                     display: flex;
@@ -1109,6 +1157,7 @@ p {
                     p {
                         margin: 0;
                         &:nth-of-type(1) {
+                            font-size: 10px;
                             display: flex;
                             align-items: center;
                             justify-content: center;
@@ -1123,7 +1172,7 @@ p {
                         }
                     }
                     img {
-                        width: 15px;
+                        width: 25px;
                         height: auto;
                     }
                 }
@@ -1140,12 +1189,12 @@ p {
                 justify-content: space-around;
                 margin-top: 10px;
                 div {
-                    width: 75px;
-                    height: 40px;
+                    width: 150px;
+                    height: 45px;
                     margin-bottom: 5px;
                     background-color: #f6ecff;
                     border: 1px dashed #d09efe;
-                    font-size: 10px;
+                    font-size: 12px;
                     font-weight: 300;
                     color: #333333;
                     display: flex;
@@ -1169,7 +1218,7 @@ p {
                         }
                     }
                     img {
-                        width: 15px;
+                        width: 30px;
                         height: auto;
                     }
                 }
@@ -1198,8 +1247,8 @@ p {
                 flex-wrap: wrap;
                 justify-content: space-around;
                 .item {
-                    width: 75px;
-                    height: 40px;
+                    width: 150px;
+                    height: 45px;
                     margin-bottom: 5px;
                     background-color: #f4eade;
                     border: 1px dashed #c48c47;
@@ -1258,8 +1307,9 @@ p {
                     height: auto;
                 }
                 p {
+                    margin: 14px;
                     color: #ba7721;
-                    font-size: 10px;
+                    font-size: 14px;
                     font-weight: 300;
                     display: flex;
                     align-items: center;
@@ -1358,12 +1408,12 @@ p {
                 }
                 .item {
                     width: 55px;
-                    font-size: 5px;
+                    font-size: 14px;
                     white-space: nowrap;
                     overflow: hidden;
                     div {
                         &:nth-of-type(2) {
-                            font-size: 14px;
+                            font-size: 18px;
                             font-weight: 400;
                             color: #545efb;
                         }
@@ -1391,13 +1441,19 @@ p {
                 }
                 .item {
                     width: 55px;
-                    font-size: 5px;
+                    font-size: 14px;
                     white-space: nowrap;
                     overflow: hidden;
                     div {
                         p {
                             margin: 0;
                         }
+                    }
+                    .unit {
+                        font-size: 10px;
+                    }
+                    .title {
+                        font-weight: 600;
                     }
                 }
                 .lin {
@@ -1418,7 +1474,7 @@ p {
                 align-items: center;
                 justify-content: space-around;
                 color: #333333;
-                font-size: 12px;
+                font-size: 14px;
                 font-weight: 400;
                 p {
                     margin: 0;
@@ -1442,7 +1498,7 @@ p {
                     width: 50%;
                     display: flex;
                     flex-direction: column;
-                    font-size: 8px;
+                    font-size: 14px;
                     height: 100%;
                     justify-content: space-around;
                     p {
@@ -1464,7 +1520,8 @@ p {
                 align-items: center;
                 position: relative;
                 justify-content: center;
-                top: 5px;
+                top: 10px;
+                height: 40px;
                 .tt {
                     width: 155px;
                     height: 30px;
@@ -1474,7 +1531,7 @@ p {
                     align-items: center;
                     font-size: 12px;
                     img {
-                        width: 16px;
+                        width: 20px;
                         height: auto;
                         margin: 0 5px;
                     }
@@ -1505,7 +1562,7 @@ p {
                 justify-content: space-around;
                 height: 60px;
                 img {
-                    width: 12px;
+                    width: 20px;
                     height: auto;
                 }
                 .lin {
@@ -1514,6 +1571,15 @@ p {
                 }
                 .item {
                     flex: 1;
+                    p {
+                        font-size: 14px;
+                        color: #333333;
+                        font-weight: 300;
+                        &:nth-of-type(1) {
+                            font-size: 10px;
+                            color: #9E9E9E;
+                        }
+                    }
                 }
             }
         }

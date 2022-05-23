@@ -48,12 +48,14 @@
             <div class="departAnalysis">
                 <div class="header">
                     <span>部门受理量分析</span>
-                    <!-- <select  @change="selectTime">
-                        <option value="1">第一季度</option>
-                        <option value="2">第二季度</option>
-                        <option value="3">第三季度</option>
-                        <option value="4">第四季度</option>
-                    </select> -->
+                    <div class="selectBlock">
+                        <select @change="selectTimeChange">
+                            <option>第一季度</option>
+                            <option>第二季度</option>
+                            <option>第三季度</option>
+                            <option>第四季度</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="center">
                     <div id="departAnalysisStatic"></div>
@@ -64,8 +66,18 @@
                     <span>业务办结率排名</span>
                     <date-picker
                         :target="'completeRankingTimeType'"
+                        :initValue="completeRankingTimeType"
                         @datePickerClick="datePickerClick"
                     ></date-picker>
+                </div>
+                <div class="subHeader">
+                    <div class="selectBlock">
+                        <select @change="selectDepartChange">
+                            <option>部门超时办结率</option>
+                            <option selected>部门办结率</option>
+                            <option>部门按时办结率</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="center">
                     <div id="completeRankingStatic"></div>
@@ -95,9 +107,10 @@ export default {
             overallBusinessSum: 0,
             departBusinesTimeType: "year",
             businessSourceTimeType: "year",
-            completeRankingTimeType: "day",
+            completeRankingTimeType: "year",
             timeType: "month",
             barColors: ["#2FE3EA", "#2FEA9C"],
+            rankingVal: '部门办结率'
         };
     },
     created() {
@@ -109,7 +122,7 @@ export default {
         this.initDepartBusines();
         this.initBusinessSource();
         this.initDepartAnalysis();
-        this.initCompleteRanking();
+        this.initCompleteRanking(this.rankingVal);
     },
     methods: {
         goBack() {
@@ -142,8 +155,8 @@ export default {
                     },
                     grid: {
                         top: "20%",
-                        right: "0",
-                        left: "0",
+                        right: "10px",
+                        left: "10px",
                         bottom: "6%",
                         // height:'100px',
                         containLabel: true,
@@ -162,7 +175,7 @@ export default {
                         },
                         textStyle: {
                             //图例文字的样式
-                            color: "#fff",
+                            color: "#86B3B8",
                             fontSize: 10,
                         },
                         y: "top",
@@ -184,10 +197,13 @@ export default {
                                 color: "#2FE3EA",
                                 textStyle: {
                                     fontSize: 12,
-                                    color: "#ffffff",
+                                    color: "#86B3B8",
                                 },
                                 formatter: (value, index) => {
-                                    return filterDate(value, this.timeType);
+                                    return filterDate(
+                                        value,
+                                        this.overallBusinessTimeType
+                                    );
                                 },
                             },
                         },
@@ -296,8 +312,8 @@ export default {
                 var option = {
                     animationDuration: 1500,
                     grid: {
-                        left: "0%",
-                        right: "0%",
+                        right: "10px",
+                        left: "10px",
                         bottom: "10%",
                         top: "10%",
                         // height:"88px",
@@ -420,15 +436,6 @@ export default {
                         values.push(item.num);
                         commoncod.push(item);
                     });
-                } else {
-                    (labels = [
-                        "01 葵涌收费站",
-                        "02 土洋收费站",
-                        "03 溪涌收费站",
-                        "04 坪葵路",
-                        "05 背仔角收费站",
-                    ]),
-                        (values = [2000, 800, 600, 400, 100]);
                 }
 
                 // 基于准备好的dom，初始化echarts实例
@@ -439,8 +446,8 @@ export default {
                 var option = {
                     animationDuration: 1500,
                     grid: {
-                        left: "0%",
-                        right: "0%",
+                        right: "10px",
+                        left: "10px",
                         bottom: "0%",
                         top: "8%",
                         // height:"88px",
@@ -522,183 +529,200 @@ export default {
         initDepartAnalysis() {
             this.onRoadChange({ roadName: "第一季度" });
         },
-        initCompleteRanking() {
+        async initCompleteRanking() {
+            var val = this.rankingVal;
             let postData = {
                 timeType: this.completeRankingTimeType,
             };
-            getbusinranking(postData).then(res => {
-                var values = [];
-                var labels = [];
-                var allTime = [];
-                if (res.data.data.length > 0) {
-                    res.data.data.forEach((item) => {
-                        labels.push(item.organizationName);
-                        values.push(item.percent);
-                        allTime.push(item);
-                    });
-                } 
-                // 基于准备好的dom，初始化echarts实例
-                var myChart = echarts.init(
-                    document.getElementById("completeRankingStatic")
-                );
-                // 绘制图表
-                var option = {
-                    animationDuration: 1500,
-                    grid: {
-                        left: "0%",
-                        right: "0%",
-                        bottom: "0%",
-                        top: "5%",
-                        containLabel: true,
+            var res;
+            if (val === "部门办结率") {
+                res = await getbusinranking(postData);
+            } else if (val === "部门超时办结率") {
+                res = await getbusinOvertime(postData);
+            } else if (val === "部门按时办结率") {
+                res = await getbusinCompleted(postData);
+            }
+
+            var values = [];
+            var labels = [];
+            var allTime = [];
+            if (res.data.data.length > 0) {
+                res.data.data.forEach((item) => {
+                    labels.push(item.organizationName);
+                    values.push(item.percent);
+                    allTime.push(item);
+                });
+            }
+            var eData = values;
+            var maxArr = [];
+            if(values.length !== 0){
+                maxArr = []
+                let max = Math.max(...values)
+                values.forEach(() => {
+                    maxArr.push(max)
+                })
+            }
+
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(
+                document.getElementById("completeRankingStatic")
+            );
+            // 绘制图表
+            var option = {
+                animationDuration: 1500,
+                grid: {
+                    left: "10px",
+                    right: "10px",
+                    bottom: "0%",
+                    top: "5%",
+                    containLabel: true,
+                },
+                tooltip: {
+                    trigger: "axis",
+                    confine: false,
+                    show: false,
+                    axisPointer: {
+                        type: "shadow",
                     },
-                    tooltip: {
-                        trigger: "axis",
-                        confine: false,
-                        show: false,
-                        axisPointer: {
-                            type: "shadow",
-                        },
-                        formatter: "{b0}: {c0}%",
-                    },
-                    xAxis: {
-                        show: false, //是否显示x轴
-                        type: "value",
-                    },
-                    yAxis: [
-                        {
-                            type: "category",
-                            inverse: true, //让y轴数据逆向
-                            axisLabel: {
-                                show: false,
-                                inside: false,
-                                textStyle: {
-                                    color: (val, index) => {
-                                        if (index === 0) {
-                                            return "#41FFEA";
-                                        } else {
-                                            return "#86B3B8";
-                                        }
-                                    }, //y轴字体颜色
-                                },
-                                //定义富文本标签
-                                rich: {
-                                    lg: {
-                                        fontWeight: "bold",
-                                        fontSize: 12, //字体默认12
-                                        color: "#08C",
-                                        padding: [0, 5, 0, 0],
-                                    },
-                                    title: {
-                                        color: "#fff",
-                                        fontWeight: "lighter",
-                                    },
-                                },
-                            },
-                            splitLine: { show: false }, //横向的线
-                            axisTick: { show: false }, //y轴的端点
-                            axisLine: { show: false }, //y轴的线
-                            data: labels,
-                        },
-                        {
-                            type: "category",
-                            inverse: true,
-                            axisTick: {
-                                show: false,
-                            },
-                            axisLine: {
-                                show: false,
-                            },
-                            show: true,
-                            axisLabel: {
-                                inside: false,
-                                textStyle: {
-                                    color: function (value, index) {
-                                        if (index === 0) return "#FF3600";
-                                        if (index === 1) return "#FE8602";
-                                        if (index === 2) return "#EFC500";
-                                        if (index === 3) return "#7CFF00";
-                                        if (index === 4) return "#7CFF00";
-                                    },
-                                    fontSize: "12",
-                                },
-                                formatter: (value, index) => {
-                                    if (allTime.length > 0) {
-                                        return (
-                                            (
-                                                allTime[index].percent *
-                                                100
-                                            ).toFixed(2) + "%"
-                                        );
+                    formatter: "{b0}: {c0}%",
+                },
+                xAxis: {
+                    show: false, //是否显示x轴
+                    type: "value",
+                },
+                yAxis: [
+                    {
+                        type: "category",
+                        inverse: true, //让y轴数据逆向
+                        axisLabel: {
+                            show: false,
+                            inside: false,
+                            textStyle: {
+                                color: (val, index) => {
+                                    if (index === 0) {
+                                        return "#41FFEA";
+                                    } else {
+                                        return "#86B3B8";
                                     }
-                                },
+                                }, //y轴字体颜色
                             },
-                            data: values,
-                        },
-                    ],
-                    series: [
-                        {
-                            name: "数据内框",
-                            zlevel: 2,
-                            type: "bar",
-                            itemStyle: {
-                                normal: {
-                                    barBorderRadius: 30,
-                                    color: echarts.graphic.LinearGradient(
-                                        0,
-                                        0,
-                                        1,
-                                        0,
-                                        [
-                                            {
-                                                offset: 0,
-                                                color: "rgba(71,181,255,0.6)",
-                                            },
-                                            {
-                                                offset: 1,
-                                                color: "rgba(65,255,234,0.7)",
-                                            },
-                                        ]
-                                    ),
+                            //定义富文本标签
+                            rich: {
+                                lg: {
+                                    fontWeight: "bold",
+                                    fontSize: 12, //字体默认12
+                                    color: "#08C",
+                                    padding: [0, 5, 0, 0],
                                 },
-                            },
-                            barWidth: 11,
-                            data: values,
-                            barGap: 10,
-                            label: {
-                                normal: {
-                                    color: "#b3ccf8",
-                                    show: true,
-                                    position: [0, "-12px"],
-                                    textStyle: {
-                                        fontSize: 14,
-                                    },
-                                    formatter: function (a) {
-                                        return a.name;
-                                    },
+                                title: {
+                                    color: "#fff",
+                                    fontWeight: "lighter",
                                 },
                             },
                         },
-                        {
-                            name: "外框",
-                            type: "bar",
-                            zlevel: 1,
-                            itemStyle: {
-                                normal: {
-                                    borderColor: "rgba(115,255,254,1)",
-                                    borderWidth: 0.5,
-                                    barBorderRadius: 15,
-                                    color: "rgba(102, 102, 102,0)",
+                        splitLine: { show: false }, //横向的线
+                        axisTick: { show: false }, //y轴的端点
+                        axisLine: { show: false }, //y轴的线
+                        data: labels,
+                    },
+                    {
+                        type: "category",
+                        inverse: true,
+                        axisTick: {
+                            show: false,
+                        },
+                        axisLine: {
+                            show: false,
+                        },
+                        show: true,
+                        axisLabel: {
+                            inside: false,
+                            textStyle: {
+                                color: function (value, index) {
+                                    if (index === 0) return "#FF3600";
+                                    if (index === 1) return "#FE8602";
+                                    if (index === 2) return "#EFC500";
+                                    if (index === 3) return "#7CFF00";
+                                    if (index === 4) return "#7CFF00";
+                                },
+                                fontSize: "12",
+                            },
+                            formatter: (value, index) => {
+                                if (allTime.length > 0) {
+                                    return (
+                                        (allTime[index].percent * 100).toFixed(
+                                            2
+                                        ) + "%"
+                                    );
+                                }
+                            },
+                        },
+                        data: eData,
+                    },
+                ],
+                series: [
+                    {
+                        name: "数据内框",
+                        zlevel: 2,
+                        type: "bar",
+                        itemStyle: {
+                            normal: {
+                                barBorderRadius: 30,
+                                color: echarts.graphic.LinearGradient(
+                                    0,
+                                    0,
+                                    1,
+                                    0,
+                                    [
+                                        {
+                                            offset: 0,
+                                            color: "rgba(71,181,255,0.6)",
+                                        },
+                                        {
+                                            offset: 1,
+                                            color: "rgba(65,255,234,0.7)",
+                                        },
+                                    ]
+                                ),
+                            },
+                        },
+                        barWidth: 11,
+                        data: eData,
+                        barGap: 10,
+                        label: {
+                            normal: {
+                                color: "#b3ccf8",
+                                show: true,
+                                position: [0, "-12px"],
+                                textStyle: {
+                                    fontSize: 14,
+                                },
+                                formatter: function (a) {
+                                    return a.name;
                                 },
                             },
-                            barGap: "-100%",
-                            z: 0,
-                            barWidth: 11,
-                            data: values,
                         },
-                    ],
-                };
-                option && myChart.setOption(option);
-            });
+                    },
+                    {
+                        name: "外框",
+                        type: "bar",
+                        zlevel: 1,
+                        itemStyle: {
+                            normal: {
+                                borderColor: "rgba(115,255,254,1)",
+                                borderWidth: 0.5,
+                                barBorderRadius: 15,
+                                color: "rgba(102, 102, 102,0)",
+                            },
+                        },
+                        barGap: "-100%",
+                        z: 0,
+                        barWidth: 11,
+                        data: maxArr,
+                    },
+                ],
+            };
+            option && myChart.setOption(option);
         },
         datePickerClick(e) {
             if (e.target === "overallBusinessTimeType") {
@@ -779,8 +803,8 @@ export default {
                 grid: {
                     top: "25%",
                     bottom: "0%",
-                    left: "0%",
-                    right: "0%",
+                    left: "10px",
+                    right: "10px",
                     width: "100%",
                     containLabel: true,
                 },
@@ -821,7 +845,7 @@ export default {
                         show: true,
                         interval: 0,
                         textStyle: {
-                            color: "rgba(250,250,250,0.6)", //X轴文字颜色
+                            color: "#86B3B8", //X轴文字颜色
                             fontSize: 12,
                         },
                         formatter: subStringFormatter,
@@ -863,7 +887,7 @@ export default {
                         axisLabel: {
                             show: true,
                             textStyle: {
-                                color: "rgba(250,250,250,0.6)",
+                                color: "#86B3B8",
                                 fontSize: 12,
                             },
                         },
@@ -889,7 +913,7 @@ export default {
                             show: true,
                             formatter: "{value} %", //右侧Y轴文字显示
                             textStyle: {
-                                color: "rgba(250,250,250,0.6)",
+                                color: "#86B3B8",
                                 fontSize: 12,
                             },
                         },
@@ -977,7 +1001,6 @@ export default {
                                         },
                                     ]
                                 ),
-                                borderWidth: 2,
                             },
                         },
                         data: values[0],
@@ -986,8 +1009,33 @@ export default {
             };
             option && myChart.setOption(option);
         },
-        selectTime(e) {
-            console.log(e);
+        selectTimeChange(e) {
+            if (e.target.selectedIndex == 0) {
+                this.onRoadChange({ roadName: "第一季度" });
+            }
+            if (e.target.selectedIndex == 1) {
+                this.onRoadChange({ roadName: "第二季度" });
+            }
+            if (e.target.selectedIndex == 2) {
+                this.onRoadChange({ roadName: "第三季度" });
+            }
+            if (e.target.selectedIndex == 3) {
+                this.onRoadChange({ roadName: "第四季度" });
+            }
+        },
+        selectDepartChange(e) {
+            if (e.target.selectedIndex == 0) {
+                this.rankingVal = '部门超时办结率';
+                this.initCompleteRanking();
+            }
+            if (e.target.selectedIndex == 1) {
+                this.rankingVal = '部门办结率';
+                this.initCompleteRanking();
+            }
+            if (e.target.selectedIndex == 2) {
+                this.rankingVal = '部门按时办结率';
+                this.initCompleteRanking();
+            }
         },
     },
 };
@@ -1077,6 +1125,13 @@ export default {
             @include module;
             .header {
                 @include header;
+                .selectBlock {
+                    select {
+                        padding: 0 3px;
+                        border: 1px solid #2fe7c7;
+                        outline-color: #2fe7c7;
+                    }
+                }
             }
             .center {
                 height: 140px;
@@ -1090,8 +1145,27 @@ export default {
         }
         .completeRanking {
             @include module;
+            height: 220px;
             .header {
                 @include header;
+            }
+            .subHeader {
+                color: #333333;
+                font-size: 14px;
+                font-weight: 600;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 20px;
+                white-space: nowrap;
+                .selectBlock {
+                    select {
+                        padding: 0 3px;
+                        border: 1px solid #2fe7c7;
+                        outline-color: #2fe7c7;
+                    }
+                }
             }
             .center {
                 height: 140px;

@@ -57,6 +57,13 @@
                         @drivePickerClick="drivePickerClick"
                     ></drive-picker>
                 </div>
+                <div class="subHeader">
+                    <time-picker
+                        :target="'trafficDistributionTimeType'"
+                        :initValue="trafficDistributionTimeType"
+                        @timePickerClick="timePickerClick"
+                    ></time-picker>
+                </div>
                 <div class="center">
                     <div id="trafficDistributionStatic"></div>
                 </div>
@@ -73,7 +80,8 @@
                 <div class="header">
                     <span>泥头车主要路段通行量时间分布</span>
                     <time-picker
-                        :target="'monitorTimeType'" :initValue="monitorTimeType"
+                        :target="'monitorTimeType'"
+                        :initValue="monitorTimeType"
                         @timePickerClick="timePickerClick"
                     ></time-picker>
                 </div>
@@ -109,7 +117,8 @@ export default {
             monitoringEntranceIndex: 0,
             direction: 0,
             driveTimeDirection: 0,
-            monitorTimeType: 'day'
+            trafficDistributionTimeType: "month",
+            monitorTimeType: "day",
         };
     },
     created() {
@@ -175,8 +184,8 @@ export default {
                 var option = {
                     animationDuration: 1500,
                     grid: {
-                        left: "0%",
-                        right: "0%",
+                        left: "10px",
+                        right: "10px",
                         bottom: "0%",
                         top: "0%",
                         containLabel: true,
@@ -308,13 +317,13 @@ export default {
         },
         initTrafficDistribution() {
             let postData = {
-                timeType: "month",
+                timeType: this.trafficDistributionTimeType,
                 carType: this.carType,
                 direction: this.driveTimeDirection,
                 roadName: "all",
                 roadFlag: 1,
             };
-            getTimeDistribution(postData).then(res => {
+            getTimeDistribution(postData).then((res) => {
                 var labels = [];
                 var values = [];
                 res.data.data.forEach((item) => {
@@ -340,8 +349,8 @@ export default {
                     },
                     grid: {
                         top: "25%",
-                        right: "0",
-                        left: "0",
+                        right: "10px",
+                        left: "10px",
                         bottom: "0",
                         containLabel: true,
                     },
@@ -476,8 +485,8 @@ export default {
                 var option = {
                     animationDuration: 1500,
                     grid: {
-                        left: "1%",
-                        right: "0%",
+                        left: "0%",
+                        right: "10px",
                         bottom: "0%",
                         top: "0%",
                         containLabel: true,
@@ -498,20 +507,67 @@ export default {
                             type: "category",
                             inverse: true, //让y轴数据逆向
                             triggerEvent: true, //开启监听点击事件
-                            offset: this.maxLen <= 3 ? 50 : 200,
+                            offset: maxLen <= 3 ? 50 : 200,
                             axisLabel: {
                                 show: true,
+                                margin: 20,
                                 textStyle: {
-                                    color: (val, index) => {
-                                        if (index === 0) {
-                                            return "#41FFEA";
-                                        } else {
-                                            return "#86B3B8";
-                                        }
-                                    }, //y轴字体颜色
+                                    color: "#41FFEA", //y轴字体颜色
+                                    align: "left",
+                                },
+                                formatter: function (val, index) {
+                                    return (
+                                        "{" +
+                                        (index + 1) +
+                                        "|" +
+                                        (index + 1) +
+                                        " }  " +
+                                        val
+                                    );
                                 },
                                 //定义富文本标签
                                 rich: {
+                                    1: {
+                                        color: "#fff",
+                                        backgroundColor: "#FF3602",
+                                        padding: [1, 1, 2, 2],
+                                        fontSize: 12,
+                                        align: "right",
+                                        align: "center",
+                                        verticalAlign: "middle",
+                                    },
+                                    2: {
+                                        color: "#fff",
+                                        backgroundColor: "#EFC500",
+                                        padding: [1, 1, 2, 2],
+                                        fontSize: 12,
+                                        align: "center",
+                                        verticalAlign: "middle",
+                                    },
+                                    3: {
+                                        color: "#fff",
+                                        backgroundColor: "#7DFF00",
+                                        padding: [1, 1, 2, 2],
+                                        fontSize: 12,
+                                        align: "center",
+                                        verticalAlign: "middle",
+                                    },
+                                    4: {
+                                        color: "#fff",
+                                        backgroundColor: "#7CFF00",
+                                        padding: [1, 1, 2, 2],
+                                        fontSize: 12,
+                                        align: "center",
+                                        verticalAlign: "middle",
+                                    },
+                                    5: {
+                                        color: "#fff",
+                                        backgroundColor: "#7CFF00",
+                                        padding: [1, 1, 2, 2],
+                                        fontSize: 12,
+                                        align: "center",
+                                        verticalAlign: "middle",
+                                    },
                                     lg: {
                                         fontWeight: "bold",
                                         fontSize: 12, //字体默认12
@@ -519,7 +575,7 @@ export default {
                                         padding: [0, 5, 0, 0],
                                     },
                                     title: {
-                                        color: "#000000",
+                                        color: "#86B3B8",
                                         fontWeight: "lighter",
                                     },
                                 },
@@ -549,14 +605,16 @@ export default {
                                 formatter: (value, index) => {
                                     if (allTime.length > 0) {
                                         return (
-                                            value + "/" + allTime[index].allNum
+                                            value +
+                                            "/" +
+                                            allTime[index].allNum
                                         );
                                     } else {
                                         return value;
                                     }
                                 },
                             },
-                            data: values,
+                            data: eData,
                         },
                     ],
                     series: [
@@ -614,7 +672,7 @@ export default {
                 timeType: this.monitorTimeType,
                 carType: this.carType,
                 direction: 2,
-                roadName: 'all',
+                roadName: "all",
                 roadFlag: 0,
             };
             getTimeDistribution(postData).then((res) => {
@@ -655,8 +713,8 @@ export default {
                     },
                     grid: {
                         top: "25%",
-                        right: "0",
-                        left: "0",
+                        right: "10px",
+                        left: "10px",
                         bottom: "0",
                         containLabel: true,
                     },
@@ -779,6 +837,10 @@ export default {
             if (e.target === "monitorTimeType") {
                 this.monitorTimeType = e.type;
                 this.initLoadSection();
+            }
+            if (e.target === "trafficDistributionTimeType") {
+                this.trafficDistributionTimeType = e.type;
+                this.initTrafficDistribution();
             }
         },
     },
@@ -944,11 +1006,23 @@ export default {
         }
         .trafficDistribution {
             @include module;
+            height: 220px;
             .header {
                 @include header;
                 .drivePicker {
                     @include drivePicker;
                 }
+            }
+            .subHeader {
+                color: #333333;
+                font-size: 14px;
+                font-weight: 600;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 20px;
+                white-space: nowrap;
             }
             .center {
                 height: 140px;
