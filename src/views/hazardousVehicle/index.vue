@@ -393,10 +393,10 @@ export default {
                                 color: "#e2e9ff",
                                 textStyle: {
                                     fontSize: 10,
-                                    color: "#ffffff",
-                                },
-                            },
-                        },
+                                    color: "#86B3B8"
+                                }
+                            }
+                        }
                     ],
                     yAxis: [
                         {

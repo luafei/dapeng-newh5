@@ -281,11 +281,11 @@ export default {
                                         [
                                             {
                                                 offset: 0,
-                                                color: "rgba(71,181,255,0.6)",
+                                                color: "rgba(2, 167, 240, 1)",
                                             },
                                             {
                                                 offset: 1,
-                                                color: "rgba(65,255,234,0.7)",
+                                                color: "rgba(0, 255, 255, 1)",
                                             },
                                         ]
                                     ),
@@ -386,10 +386,10 @@ export default {
                                 color: "#e2e9ff",
                                 textStyle: {
                                     fontSize: 10,
-                                    color: "#ffffff",
-                                },
-                            },
-                        },
+                                    color: "#86B3B8"
+                                }
+                            }
+                        }
                     ],
                     yAxis: [
                         {

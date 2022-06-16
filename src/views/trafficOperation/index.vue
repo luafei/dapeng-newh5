@@ -153,12 +153,40 @@ export default {
                 vehicleType: "all",
             }).then((res) => {
                 if (res.data.data) {
+                    var  colors = ["#ff9f40", "#ff5959", "#2795cc"];
                     var list = [];
                     res.data.data.forEach((item) => {
-                        list.push({
-                            name: item.name,
-                            value: item.num,
-                        });
+                        if (item.name == "南澳") {
+                            list.push({
+                                name: item.name,
+                                value: item.num,
+                                itemStyle: {
+                                    color: colors[0]
+                                }
+                            });
+                        }else if (item.name == "大鹏") {
+                            list.push({
+                                name: item.name,
+                                value: item.num,
+                                itemStyle: {
+                                    color: colors[1]
+                                }
+                            });
+                        }else if (item.name == "葵涌") {
+                            list.push({
+                                name: item.name,
+                                value: item.num,
+                                itemStyle: {
+                                    color: colors[2]
+                                }
+                            });
+                        }else {
+                            list.push({
+                                name: item.name,
+                                value: item.num
+                            });
+                        }
+                    
                     });
                     // 基于准备好的dom，初始化echarts实例
                     var myChart = echarts.init(
@@ -170,6 +198,7 @@ export default {
                             trigger: "item",
                         },
                         legend: {
+                            right: "10px",
                             orient: "vertical",
                             left: "right",
                         },

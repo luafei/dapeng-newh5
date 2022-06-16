@@ -185,12 +185,12 @@
             <!-- <div class="underline"></div> -->
             <div class="brightMode">
                 <div class="header">
-                    <span>光明模式</span>
+                    <span>群众诉求服务</span>
                     <img src="@/assets/images/right.png" />
                 </div>
                 <div class="center">
                     <div class="item">
-                        <div class="title">光明模式</div>
+                        <div class="title">政法系统光明模式</div>
                         <div class="db">
                             <div>
                                 <p>162</p>
@@ -202,6 +202,7 @@
                                 <p>化解数</p>
                             </div>
                         </div>
+                        <div class="source">数据来源: 政法办公室</div>
                     </div>
                     <div class="lin"></div>
                     <div class="item">
@@ -217,8 +218,10 @@
                                 <p>办结数</p>
                             </div>
                         </div>
+                        <div class="source">市政务服务数据管理局</div>
                     </div>
                 </div>
+                <div class="footer">统计频率: 季度</div>
             </div>
             <div class="dataSharing">
                 <div class="header">
@@ -679,7 +682,7 @@ $dumpTruckHeader: #3092ed;
 $hazardousHeader: #dea90a;
 $ecologicalHeader: #05bc3d;
 $tourisHeader: #6300bf;
-$brightHeader: #00b3b3;
+$brightHeader: #3092ed;
 $dataSharingHeader: #23b471;
 $smartEmergency: #c07efc;
 $smartWaterHeader: #b8741a;
@@ -800,7 +803,7 @@ p {
                         span {
                             color: #a257c9;
                             font-size: 18px;
-                            font-weight: 400;
+                            font-weight: 500;
                         }
                     }
                 }
@@ -854,12 +857,12 @@ p {
                         span {
                             color: #3092ed;
                             font-size: 18px;
-                            font-weight: 400;
+                            font-weight: 500;
                         }
                         &.load {
                             font-size: 18px;
                             color: #3092ed;
-                            font-weight: 400;
+                            font-weight: 500;
                         }
                     }
                 }
@@ -911,12 +914,12 @@ p {
                         span {
                             color: #dea90a;
                             font-size: 18px;
-                            font-weight: 400;
+                            font-weight: 500;
                         }
                         &.load {
                             font-size: 18px;
                             color: #dea90a;
-                            font-weight: 400;
+                            font-weight: 500;
                         }
                     }
                 }
@@ -996,7 +999,7 @@ p {
                 display: flex;
                 align-items: center;
                 justify-content: space-around;
-                height: 40px;
+                height: 50px;
                 font-size: 14px;
                 img {
                     width: 23px;
@@ -1102,33 +1105,58 @@ p {
                 justify-content: space-around;
                 position: relative;
                 .item {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    height: 100%;
                     .title {
-                        height: 50px;
+                        height: 30px;
                         width: 100%;
                         text-align: center;
                         position: relative;
-                        line-height: 50px;
+                        line-height: 30px;
                         font-size: 14px;
+                        font-weight: 500;
                     }
                     .db {
-                        height: 50px;
+                        // height: 40px;
                         display: flex;
+                        justify-content: space-between;
+                        align-items: center;
                         font-size: 10px;
                         p {
                             font-size: 14px;
                             margin: 0;
                             white-space: nowrap;
+                            font-weight: 500;
                             &:nth-of-type(1) {
-                                color: #00b3b3;
+                                color: #3092ed;
                                 font-size: 18px;
+                                font-weight: 400;
                             }
                         }
+                    }
+                    .source {
+                        text-align: center;
+                        font-size: 10px;
+                        color: #7f7f7f;
+                        font-weight: 500;
                     }
                 }
                 .lin {
                     height: 80%;
-                    border: 1px dashed #e2f0fc;
+                    border: 1px dashed #3092ed;
                 }
+            }
+            .footer {
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+                position: relative;
+                font-size: 10px;
+                color: #7f7f7f;
+                font-weight: 500;
             }
         }
         .dataSharing {

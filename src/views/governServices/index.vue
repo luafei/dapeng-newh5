@@ -144,6 +144,7 @@ export default {
                 var myChart = echarts.init(
                     document.getElementById("overallBusinessStatic")
                 );
+                var barColors = ["#00ffff", "#02a7f0"];
                 // 绘制图表
                 var option = {
                     tooltip: {
@@ -275,11 +276,11 @@ export default {
                                         [
                                             {
                                                 offset: 0,
-                                                color: this.barColors[0],
+                                                color: barColors[0],
                                             },
                                             {
                                                 offset: 1,
-                                                color: this.barColors[1],
+                                                color: barColors[1],
                                             },
                                         ]
                                     ),
@@ -308,6 +309,7 @@ export default {
                 var myChart = echarts.init(
                     document.getElementById("departBusinesStatic")
                 );
+                var barColors = ["#facd91", "#f59a23"];
                 // 绘制图表
                 var option = {
                     animationDuration: 1500,
@@ -406,11 +408,11 @@ export default {
                                         [
                                             {
                                                 offset: 0,
-                                                color: this.barColors[0],
+                                                color: barColors[0],
                                             },
                                             {
                                                 offset: 1,
-                                                color: this.barColors[1],
+                                                color: barColors[1],
                                             },
                                         ]
                                     ),
@@ -442,6 +444,7 @@ export default {
                 var myChart = echarts.init(
                     document.getElementById("businessSourceStatic")
                 );
+                var barColors = ["#ec808d", "#ff5959"];
                 // 绘制图表
                 var option = {
                     animationDuration: 1500,
@@ -510,11 +513,11 @@ export default {
                                         [
                                             {
                                                 offset: 0,
-                                                color: this.barColors[0],
+                                                color: barColors[0],
                                             },
                                             {
                                                 offset: 1,
-                                                color: this.barColors[1],
+                                                color: barColors[1],
                                             },
                                         ]
                                     ),
