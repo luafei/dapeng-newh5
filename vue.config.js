@@ -39,14 +39,6 @@ module.exports = {
     },
     chainWebpack(config) {
         config.plugin('html').tap(args => {
-            // if(process.env.VUE_APP_BASE_API.indexOf('http://172.21.112.65:8083') !== -1){ //演示环境
-            //     args[0].mapUrl = 'http://10.146.1.53:9018'
-            //     args[0].mapFileName = 'LongMap1'
-            // }else {
-            //     //生产环境
-            //     args[0].mapUrl = 'http://172.21.112.113:9018'
-            //     args[0].mapFileName = 'LongMap'
-            // }
             return args;
         })
     }
