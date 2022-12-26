@@ -604,7 +604,6 @@ export default {
   },
   methods: {
     goDetail(id) {
-      console.log(id);
       id == 1 && this.$router.push("trafficOperation");
       id == 2 && this.$router.push("governServices");
       id == 3 && this.$router.push("dumpTruck");
