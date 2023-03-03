@@ -113,6 +113,35 @@
         </div>
       </div>
 
+      <div class="middleScreeen">
+        <iframe
+          id="zhtj"
+          width="100%"
+          height="100%"
+          scrolling="no"
+          frameborder="0"
+          src="http://172.21.112.89:6999/jsp/pj-dyjkqtjwb/leader/screen/home/small_home.jsp"
+        ></iframe>
+        <!-- <div class="header" @click="iframeDetail('zhtj')">
+          <span>智慧统计</span>
+          <img src="@/assets/images/right.png" />
+        </div>
+        <div class="center">
+            <div class="title">经济主要指标</div>
+            <div class="mcenter">
+              <div class="">
+                <img src="@/assets/images/zhtj_card_bt1.png" alt="">
+                <p>规上工业增加值</p>
+              </div>
+              <span class="lin"></span>
+              <div class="">
+                <img src="@/assets/images/zhtj_card_bt2.png" alt="">
+                <p>固定资产投资额</p>
+              </div>
+            </div>
+          </div> -->
+      </div>
+
       <div class="home_underline">
         <img src="@/assets/images/home_underline.svg" alt="" />
         <span>以下卡片待上线</span>
@@ -526,34 +555,6 @@
           </div>
         </div>
       </div>
-      <div class="middleScreeen">
-        <iframe
-          id="zhtj"
-          width="100%"
-          height="100%"
-          scrolling="no"
-          frameborder="0"
-          src="http://172.21.112.89:6999/jsp/pj-dyjkqtjwb/leader/screen/home/small_home.jsp"
-        ></iframe>
-        <!-- <div class="header" @click="iframeDetail('zhtj')">
-          <span>智慧统计</span>
-          <img src="@/assets/images/right.png" />
-        </div>
-        <div class="center">
-            <div class="title">经济主要指标</div>
-            <div class="mcenter">
-              <div class="">
-                <img src="@/assets/images/zhtj_card_bt1.png" alt="">
-                <p>规上工业增加值</p>
-              </div>
-              <span class="lin"></span>
-              <div class="">
-                <img src="@/assets/images/zhtj_card_bt2.png" alt="">
-                <p>固定资产投资额</p>
-              </div>
-            </div>
-          </div> -->
-      </div>
     </div>
   </div>
 </template>
@@ -807,14 +808,16 @@ p {
     }
   }
   .content {
-    position: relative;
+    position: absolute;
     top: 194px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     padding: 13px 20px 10px 20px;
     width: 100%;
-    padding-bottom: 40px;
+    padding-bottom: 80px;
+    bottom: 0;
+    overflow-y: auto;
     .underline {
       width: 100%;
       margin: 10px 0;
